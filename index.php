@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+
+<title>TEST</title>
+
+<style type="text/css">
+.hideable {
+    display: none;
+}
+img {
+    width: 640px;
+    height: 480px;
+}
+</style>
+<base href="/sandbox/slideshow/media/" />
+
+<script type="text/javascript">
+var interval = 1000; // You can change this value to your desired speed. The value is in milliseconds, so if you want to advance a slide every 5 seconds, set this to 5000.
+var switching = setInterval("toggleSlide(true)", interval);
+
+window.paused = false;
+
+function toggleInterval() {
+    var button = document.getElementById("pauseButton");
+    if(!window.paused) {
+        clearInterval(switching);
+        button.value = "Resume";
+    } else {
+        switching = setInterval("toggleSlide(true)", interval);
+        button.value = "Pause";
+    }
+    window.paused = !(window.paused);
+}
+
+// direction = boolean value: true or false. If true, go to NEXT slide; otherwise go to PREV slide
+function toggleSlide(direction) {
+    var elements = document.getElementsByClassName("hideable"); // gets all the "slides" in our slideshow
+    
+    // Find the LI that's currently displayed
+    var visibleID = getVisible(elements);
+
+    elements[visibleID].style.display = "none"; // hide the currently visible LI
+    if(!direction) {
+        var makeVisible = prev(visibleID, elements.length); // get the previous slide
+    } else {
+        var makeVisible = next(visibleID, elements.length); // get the next slide
+    }
+    elements[makeVisible].style.display = "block"; // show the previous or next slide
+    var sn = document.getElementById("slideNumber");
+    sn.innerHTML = (makeVisible + 1);
+}
+
+function getVisible(elements) {
+    var visibleID = -1;
+    for(var i = 0; i < elements.length; i++) {
+        if(elements[i].style.display == "block") {
+            visibleID = i;
+        }
+    }
+    return visibleID;
+}
+ 
+function prev(num, arrayLength) {
+    if(num == 0) return arrayLength-1;
+    else return num-1;
+}
+ 
+function next(num, arrayLength) {
+    if(num == arrayLength-1) return 0;
+    else return num+1;
+}
+
+function goToEdge(where) {
+    var elements = document.getElementsByClassName("hideable");
+    var visibleID = getVisible(elements);
+    var firstButton = document.getElementById("firstButton");
+    var lastButton = document.getElementById("lastButton");
+
+    
+    var sn = document.getElementById("slideNumber");
+    elements[visibleID].style.display = "none";
+    if(!where) {
+        elements[0].style.display = "block";
+        sn.innerHTML = 1;
+    } else {
+        elements[elements.length-1].style.display = "block";
+        sn.innerHTML = elements.length;
+    }
+}
+</script>
+</head>
+<body>
+
+<ul style="list-style-type:none; margin-left:-2em;">
+    <li id="1" class="hideable" style="display: block;"><img src="background.jpg" alt="hinterground" /></li>
+    <li id="2" class="hideable"><img src="berries.jpg" alt="Berries" /></li>
+    <li id="3" class="hideable"><img src="cheetah.jpg" alt="Cheetah" /></li>
+    <li id="4" class="hideable"><img src="fence.jpg" alt="Fence" /></li>
+    <li id="5" class="hideable"><img src="paper.jpg" alt="Paper" /></li>
+    <li id="6" class="hideable"><img src="sunset.jpg" alt="Sunset" /></li>
+    <!-- ... and so on -->
+</ul>
+<!-- Buttons to go back and forth between slides. -->
+<p>
+Slide <!-- you can change "Slide" to Page, Item, etc. -->
+<span id="slideNumber">
+<script type="text/javascript">
+var elements = document.getElementsByClassName("hideable");
+var vis = getVisible(elements) + 1;
+document.write(vis);
+</script>
+</span>
+of <!-- Or use "/", as in Page 3/7 -->
+<script type="text/javascript">
+// Write the number of slides to HTML. Dynamically changes as you add or remove slides.
+document.write(document.getElementsByClassName("hideable").length);
+</script>
+</p>
+<form>
+<input type="button" id="firstButton" value="First" onclick="goToEdge(false)" />
+<input type="button" value="Back" onclick="toggleSlide(false)" />
+<input id="pauseButton" onclick="toggleInterval()" type="button" value="Pause" />
+<input type="button" value="Forward" onclick="toggleSlide(true)" />
+<input type="button" id="lastButton" value="Last" onclick="goToEdge(true)" />
+
+</form>
+
+<footer>
+<address>
+All images from <a href="http://publicdomainpictures.net" target="_blank">PublicDomainPictures.net</a>.
+</address>
+</footer>
+<!-- Quantcast Tag -->
+<script type="text/javascript">
+var _qevents = _qevents || [];
+
+(function() {
+var elem = document.createElement('script');
+elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
+elem.async = true;
+elem.type = "text/javascript";
+var scpt = document.getElementsByTagName('script')[0];
+scpt.parentNode.insertBefore(elem, scpt);
+})();
+
+_qevents.push({
+qacct:"p-gxZBSGMCGZ6DU"
+});
+</script>
+
+<noscript>
+<div style="display:none;">
+<img src="//pixel.quantserve.com/pixel/p-gxZBSGMCGZ6DU.gif" border="0" height="1" width="1" alt="Quantcast"/>
+</div>
+</noscript>
+<!-- End Quantcast tag -->
+</body>
+</html>
